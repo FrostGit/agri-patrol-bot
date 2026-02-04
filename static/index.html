@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农业巡检智能服务应用</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0a192f;
+            color: #e6f1ff;
+            overflow: hidden;
+        }
+        
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            grid-template-rows: 60px 1fr 220px;
+            gap: 15px;
+            padding: 15px;
+        }
+        
+        /* 头部样式 */
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #112240 0%, #233554 100%);
+            border-radius: 10px;
+            padding: 0 20px;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .status-btn {
+            padding: 8px 15px;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            background: transparent;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .status-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+        }
+        
+        .status-btn.online {
+            background: rgba(0, 255, 100, 0.2);
+            border-color: #00ff66;
+            color: #00ff66;
+        }
+        
+        .time-display {
+            font-size: 14px;
+            color: #8892b0;
+        }
+        
+        /* 左侧面板 */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .panel-card {
+            background: linear-gradient(135deg, #112240 0%, #233554 100%);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #00ffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* 设备状态监控 */
+        .device-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00ffff;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #8892b0;
+            margin-top: 5px;
+        }
+        
+        /* 设备列表 */
+        .device-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .device-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 3px solid #00ffff;
+        }
+        
+        .device-name {
+            font-size: 14px;
+        }
+        
+        .device-status {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+        
+        .status-online {
+            background: rgba(0, 255, 100, 0.2);
+            color: #00ff66;
+        }
+        
+        .status-offline {
+            background: rgba(255, 100, 100, 0.2);
+            color: #ff6666;
+        }
+        
+        /* 柱状图区域 */
+        .chart-container {
+            height: 180px;
+            margin-top: 15px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+        
+        .chart-bar {
+            width: 30px;
+            background: linear-gradient(to top, #00ffff, #0088ff);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #8892b0;
+        }
+        
+        /* 中央地图区域 */
+        .map-container {
+            grid-row: 2 / 3;
+            grid-column: 2 / 3;
+            background: linear-gradient(135deg, #112240 0%, #233554 100%);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .map-area {
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%230a192f"/><path d="M0 20 L100 20 M0 40 L100 40 M0 60 L100 60 M0 80 L100 80 M20 0 L20 100 M40 0 L40 100 M60 0 L60 100 M80 0 L80 100" stroke="%2300ff66" stroke-width="0.5" opacity="0.3"/></svg>') repeat;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .field-area {
+            position: absolute;
+            background: linear-gradient(to bottom, #00ff66, #00cc44);
+            border: 2px solid #00ff66;
+            box-shadow: 0 0 20px rgba(0, 255, 100, 0.3);
+        }
+        
+        .field-1 {
+            top: 10%;
+            left: 10%;
+            width: 35%;
+            height: 40%;
+        }
+        
+        .field-2 {
+            top: 10%;
+            right: 10%;
+            width: 35%;
+            height: 40%;
+        }
+        
+        .field-3 {
+            bottom: 10%;
+            left: 10%;
+            width: 35%;
+            height: 40%;
+            background: linear-gradient(to bottom, #ffaa00, #ff8800);
+            border-color: #ffaa00;
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.3);
+        }
+        
+        .field-4 {
+            bottom: 10%;
+            right: 10%;
+            width: 35%;
+            height: 40%;
+        }
+        
+        .robot {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #000000 30%, #00ffff 100%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 255, 1); }
+            100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
+        }
+        
+        .robot::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 10px solid #00ffff;
+        }
+        
+        .tower {
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 20px;
+            height: 100px;
+            background: linear-gradient(to bottom, #8892b0, #112240);
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tower::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -15px;
+            width: 50px;
+            height: 20px;
+            background: linear-gradient(to right, #8892b0, #112240);
+            border-radius: 50%;
+        }
+        
+        /* 右侧面板 */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        /* 核心功能统计 */
+        .hexagon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 180px;
+            margin: 15px 0;
+        }
+        
+        .hexagon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #00ffff, #0088ff, #ff00ff);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stat-grid-item {
+            text-align: center;
+            padding: 8px;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+        
+        .stat-grid-value {
+            font-size: 18px;
+            color: #00ffff;
+            font-weight: bold;
+        }
+        
+        .stat-grid-label {
+            font-size: 12px;
+            color: #8892b0;
+            margin-top: 3px;
+        }
+        
+        /* 病虫害识别统计 */
+        .pest-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .pest-item {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+        
+        .pest-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 10px;
+            background: radial-gradient(circle, #ff6600, #ff0000);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        /* 底部防治方案 */
+        .bottom-panel {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .solution-card {
+            background: linear-gradient(135deg, #112240 0%, #233554 100%);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            text-align: center;
+        }
+        
+        .solution-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            color: white;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        
+        .solution-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #00ffff;
+        }
+        
+        .solution-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff66;
+            text-shadow: 0 0 10px rgba(0, 255, 100, 0.5);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 250px 1fr 250px;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 60px auto 400px auto auto;
+                overflow-y: auto;
+            }
+            
+            .left-panel, .right-panel {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+            
+            .panel-card {
+                min-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>农业巡检智能服务应用</h1>
+            <div class="header-right">
+                <button class="status-btn online">在线态</button>
+                <button class="status-btn">远程指令</button>
+                <button class="status-btn">数据社区</button>
+                <div class="time-display">09:01:24</div>
+            </div>
+        </div>
+        
+        <!-- 左侧面板 -->
+        <div class="left-panel">
+            <!-- 设备状态监控 -->
+            <div class="panel-card">
+                <div class="panel-title">
+                    <span>设备状态监控</span>
+                    <span style="color: #00ff66;">● 正常</span>
+                </div>
+                <div class="device-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="battery">98%</div>
+                        <div class="stat-label">充电机</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="sensorTime">09:00</div>
+                        <div class="stat-label">传感器</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="powerLevel">600%</div>
+                        <div class="stat-label">电量</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="signalStrength">97%</div>
+                        <div class="stat-label">信号</div>
+                    </div>
+                </div>
+                
+                <div id="deviceList">
+                    <div class="device-item">
+                        <div class="device-name">主控制器</div>
+                        <div class="device-status status-online">70%</div>
+                    </div>
+                    <div class="device-item">
+                        <div class="device-name">传感器1</div>
+                        <div class="device-status status-online">90%</div>
+                    </div>
+                    <div class="device-item">
+                        <div class="device-name">传感器2</div>
+                        <div class="device-status status-online">90%</div>
+                    </div>
+                    <div class="device-item">
+                        <div class="device-name">执行机构</div>
+                        <div class="device-status status-online">50%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 设备状态监控 -->
+            <div class="panel-card">
+                <div class="panel-title">
+                    <span>设备状态监控</span>
+                    <span style="font-size: 12px; color: #8892b0;">查看图表 ▶</span>
+                </div>
+                
+                <div class="chart-container" id="chartContainer">
+                    <div class="chart-bar" style="height: 60%;"><div class="chart-label">虫害</div></div>
+                    <div class="chart-bar" style="height: 45%;"><div class="chart-label">生虫</div></div>
+                    <div class="chart-bar" style="height: 75%;"><div class="chart-label">2级</div></div>
+                    <div class="chart-bar" style="height: 30%;"><div class="chart-label">预防</div></div>
+                    <div class="chart-bar" style="height: 55%;"><div class="chart-label">治理</div></div>
+                    <div class="chart-bar" style="height: 40%;"><div class="chart-label">0级</div></div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-around; margin-top: 15px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 18px; color: #00ffff;" id="riskLevel">5%</div>
+                        <div style="font-size: 12px; color: #8892b0;">总体风险</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 18px; color: #00ffff;" id="alertCount">0:00</div>
+                        <div style="font-size: 12px; color: #8892b0;">预警次数</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 18px; color: #00ffff;" id="trendStat">200</div>
+                        <div style="font-size: 12px; color: #8892b0;">趋势统计</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 中央地图区域 -->
+        <div class="map-container">
+            <div class="map-area" id="mapArea">
+                <div class="field-area field-1"></div>
+                <div class="field-area field-2"></div>
+                <div class="field-area field-3"></div>
+                <div class="field-area field-4"></div>
+                <div class="robot" id="robot"></div>
+                <div class="tower"></div>
+            </div>
+        </div>
+        
+        <!-- 右侧面板 -->
+        <div class="right-panel">
+            <!-- 核心功能统计 -->
+            <div class="panel-card">
+                <div class="panel-title">
+                    <span>核心功能统计</span>
+                    <span style="font-size: 12px; color: #8892b0;">云台</span>
+                </div>
+                <div class="hexagon-container">
+                    <div class="hexagon">AI</div>
+                </div>
+                <div class="stats-grid" id="coreStats">
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">15%</div>
+                        <div class="stat-grid-label">统计</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">2.7X</div>
+                        <div class="stat-grid-label">效果</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">3.15</div>
+                        <div class="stat-grid-label">效率</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">2.3</div>
+                        <div class="stat-grid-label">能耗</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">2.00</div>
+                        <div class="stat-grid-label">速度</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">5.13</div>
+                        <div class="stat-grid-label">识别率</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">3.20</div>
+                        <div class="stat-grid-label">计算力</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 病虫害识别统计 -->
+            <div class="panel-card">
+                <div class="panel-title">病虫害识别统计</div>
+                <div class="pest-container" id="pestContainer">
+                    <!-- 病虫害数据将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 防治方案 -->
+            <div class="panel-card">
+                <div class="panel-title">防治方案</div>
+                <div id="solution">
+                    <!-- 防治方案数据将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部防治方案 -->
+        <div class="bottom-panel" id="bottomSolutions">
+            <!-- 底部解决方案数据将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        // API基础URL
+        const API_BASE_URL = '/api';
+        
+        // 更新时间显示
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN', { hour12: false });
+            document.querySelector('.time-display').textContent = timeString;
+        }
+        
+        // 获取设备状态数据
+        async function fetchDeviceStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/device/status`);
+                const data = await response.json();
+                
+                // 更新设备状态数据到DOM
+                document.getElementById('battery').textContent = `${data.battery}%`;
+                document.getElementById('sensorTime').textContent = data.sensor_time;
+                document.getElementById('powerLevel').textContent = `${data.power_level}%`;
+                document.getElementById('signalStrength').textContent = `${data.signal_strength}%`;
+                
+                // 更新设备列表
+                const deviceList = document.getElementById('deviceList');
+                deviceList.innerHTML = '';
+                data.devices.forEach(device => {
+                    const deviceItem = document.createElement('div');
+                    deviceItem.className = 'device-item';
+                    deviceItem.innerHTML = `
+                        <div class="device-name">${device.name}</div>
+                        <div class="device-status status-${device.status}">${device.value}%</div>
+                    `;
+                    deviceList.appendChild(deviceItem);
+                });
+                
+                // 更新图表数据
+                const chartContainer = document.getElementById('chartContainer');
+                chartContainer.innerHTML = '';
+                const chartLabels = ['虫害', '生虫', '2级', '预防', '治理', '0级'];
+                data.chart_data.forEach((value, index) => {
+                    const chartBar = document.createElement('div');
+                    chartBar.className = 'chart-bar';
+                    chartBar.style.height = `${value}%`;
+                    chartBar.innerHTML = `<div class="chart-label">${chartLabels[index]}</div>`;
+                    chartContainer.appendChild(chartBar);
+                });
+                
+                // 更新风险等级等数据
+                document.getElementById('riskLevel').textContent = `${data.risk_level}%`;
+                document.getElementById('alertCount').textContent = data.alert_count;
+                document.getElementById('trendStat').textContent = data.trend_stat;
+                
+            } catch (error) {
+                console.error('获取设备状态失败:', error);
+            }
+        }
+        
+        // 获取机器人状态数据
+        async function fetchRobotStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/robot/status`);
+                const data = await response.json();
+                
+                // 更新机器人位置
+                const robot = document.getElementById('robot');
+                robot.style.top = `${data.y}%`;
+                robot.style.left = `${data.x}%`;
+                
+                // 可以添加机器人状态显示
+                
+            } catch (error) {
+                console.error('获取机器人状态失败:', error);
+            }
+        }
+        
+        // 获取核心功能统计数据
+        async function fetchCoreStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/stats/core`);
+                const data = await response.json();
+                
+                // 更新核心功能统计数据
+                const coreStats = document.getElementById('coreStats');
+                coreStats.innerHTML = `
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">${data.statistics}%</div>
+                        <div class="stat-grid-label">统计</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">${data.effect}X</div>
+                        <div class="stat-grid-label">效果</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">${data.efficiency}</div>
+                        <div class="stat-grid-label">效率</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">${data.energy_consumption}</div>
+                        <div class="stat-grid-label">能耗</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">${data.speed}</div>
+                        <div class="stat-grid-label">速度</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">${data.recognition_rate}</div>
+                        <div class="stat-grid-label">识别率</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">${data.computing_power}</div>
+                        <div class="stat-grid-label">计算力</div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('获取核心功能统计失败:', error);
+            }
+        }
+        
+        // 获取病虫害数据
+        async function fetchPestData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/pests`);
+                const data = await response.json();
+                
+                // 更新病虫害数据到DOM
+                const pestContainer = document.getElementById('pestContainer');
+                pestContainer.innerHTML = '';
+                data.forEach(pest => {
+                    const pestItem = document.createElement('div');
+                    pestItem.className = 'pest-item';
+                    pestItem.innerHTML = `
+                        <div class="pest-icon">${pest.icon}</div>
+                        <div style="font-size: 14px; margin-bottom: 5px;">${pest.name}</div>
+                        <div style="font-size: 12px; color: #00ff66;">${pest.percentage}%</div>
+                    `;
+                    pestContainer.appendChild(pestItem);
+                });
+                
+            } catch (error) {
+                console.error('获取病虫害数据失败:', error);
+            }
+        }
+        
+        // 获取防治方案数据
+        async function fetchSolution() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/solution`);
+                const data = await response.json();
+                
+                // 更新防治方案数据到DOM
+                const solution = document.getElementById('solution');
+                solution.innerHTML = `
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 12px; color: #8892b0;">叶片定位</div>
+                        <div style="font-size: 16px; color: #00ffff;">${data.leaf_position}</div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 12px; color: #8892b0;">病虫害类型</div>
+                        <div style="font-size: 16px; color: #00ffff;">${data.pest_type}</div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 12px; color: #8892b0;">危害程度</div>
+                        <div style="font-size: 16px; color: #00ffff;">${data.harm_level}</div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 12px; color: #8892b0;">推荐药剂</div>
+                        <div style="font-size: 16px; color: #00ffff;">${data.recommended_agent}</div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 12px; color: #8892b0;">农残标准</div>
+                        <div style="font-size: 16px; color: #00ffff;">${data.pesticide_residue}</div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 12px; color: #8892b0;">防治周期</div>
+                        <div style="font-size: 16px; color: #00ffff;">${data.control_cycle}</div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('获取防治方案失败:', error);
+            }
+        }
+        
+        // 获取底部解决方案数据
+        async function fetchBottomSolutions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/solution/bottom`);
+                const data = await response.json();
+                
+                // 更新底部解决方案数据到DOM
+                const bottomSolutions = document.getElementById('bottomSolutions');
+                bottomSolutions.innerHTML = '';
+                data.forEach(solution => {
+                    const solutionCard = document.createElement('div');
+                    solutionCard.className = 'solution-card';
+                    solutionCard.innerHTML = `
+                        <div class="solution-icon">${solution.icon}</div>
+                        <div class="solution-title">${solution.title}</div>
+                        <div class="solution-value">${solution.value}</div>
+                    `;
+                    bottomSolutions.appendChild(solutionCard);
+                });
+                
+            } catch (error) {
+                console.error('获取底部解决方案失败:', error);
+            }
+        }
+        
+        // 控制机器人移动
+        async function controlRobot(x, y) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/robot/control`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        command: 'move',
+                        x: x,
+                        y: y
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    console.log('机器人控制成功:', result.message);
+                } else {
+                    console.error('机器人控制失败:', result.message);
+                }
+                
+            } catch (error) {
+                console.error('控制机器人失败:', error);
+            }
+        }
+        
+        // 地图点击事件处理
+        function handleMapClick(event) {
+            const mapArea = document.getElementById('mapArea');
+            const rect = mapArea.getBoundingClientRect();
+            
+            // 计算点击位置相对于地图的百分比
+            const x = ((event.clientX - rect.left) / rect.width) * 100;
+            const y = ((event.clientY - rect.top) / rect.height) * 100;
+            
+            // 发送移动命令到机器人
+            controlRobot(Math.round(x), Math.round(y));
+        }
+        
+        // 初始化地图点击事件
+        function initMapClick() {
+            const mapArea = document.getElementById('mapArea');
+            mapArea.addEventListener('click', handleMapClick);
+        }
+        
+        // 获取所有数据的函数
+        async function fetchAllData() {
+            await Promise.all([
+                fetchDeviceStatus(),
+                fetchRobotStatus(),
+                fetchCoreStats(),
+                fetchPestData(),
+                fetchSolution(),
+                fetchBottomSolutions()
+            ]);
+        }
+        
+        // 初始化函数
+        function init() {
+            // 初始化地图点击事件
+            initMapClick();
+            
+            // 初始获取所有数据
+            fetchAllData();
+            
+            // 启动时间更新
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // 定期更新数据
+            setInterval(fetchAllData, 5000); // 每5秒更新一次数据
+        }
+        
+        // 页面加载完成后初始化
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
