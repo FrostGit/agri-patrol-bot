@@ -13,20 +13,22 @@
         }
         
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Microsoft YaHei', 'Arial', sans-serif;
             background-color: #0a192f;
             color: #e6f1ff;
             overflow: hidden;
+            width: 100vw;
+            height: 100vh;
         }
         
         .container {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             display: grid;
-            grid-template-columns: 280px 1fr 280px;
-            grid-template-rows: 60px 1fr 220px;
-            gap: 15px;
-            padding: 15px;
+            grid-template-columns: 320px 1fr 320px;
+            grid-template-rows: 70px 1fr 160px;
+            gap: 12px;
+            padding: 12px;
         }
         
         /* 头部样式 */
@@ -36,35 +38,42 @@
             justify-content: space-between;
             align-items: center;
             background: linear-gradient(135deg, #112240 0%, #233554 100%);
-            border-radius: 10px;
-            padding: 0 20px;
-            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0 25px;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.15);
+            border: 1px solid rgba(0, 255, 255, 0.3);
         }
         
         .header h1 {
-            font-size: 24px;
+            font-size: 26px;
             color: #00ffff;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+            font-weight: bold;
+            letter-spacing: 2px;
         }
         
         .header-right {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
         
         .status-btn {
-            padding: 8px 15px;
+            padding: 8px 16px;
             border: 1px solid #00ffff;
             border-radius: 5px;
             background: transparent;
             color: #00ffff;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 13px;
+            font-weight: 500;
         }
         
         .status-btn:hover {
-            background: rgba(0, 255, 255, 0.1);
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 255, 255, 0.3);
         }
         
         .status-btn.online {
@@ -74,64 +83,132 @@
         }
         
         .time-display {
-            font-size: 14px;
+            font-size: 15px;
             color: #8892b0;
+            font-weight: 500;
+            min-width: 70px;
+            text-align: right;
         }
         
         /* 左侧面板 */
         .left-panel {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            overflow-y: auto;
+        }
+        
+        .left-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .left-panel::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 3px;
         }
         
         .panel-card {
-            background: linear-gradient(135deg, #112240 0%, #233554 100%);
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.2);
+            background: linear-gradient(135deg, #112240 0%, #1a2f4d 100%);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.25);
         }
         
         .panel-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: #00ffff;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
         }
         
         /* 设备状态监控 */
         .device-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
         }
         
         .stat-item {
             text-align: center;
+            padding: 8px 4px;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 5px;
         }
         
         .stat-value {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: bold;
             color: #00ffff;
+            margin-bottom: 4px;
         }
         
         .stat-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #8892b0;
-            margin-top: 5px;
+        }
+        
+        /* 信号强度条 */
+        .signal-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 20px;
+        }
+        
+        .signal-bar {
+            width: 4px;
+            background: #00ffff;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+        
+        .signal-bar:nth-child(1) {
+            height: 25%;
+        }
+        
+        .signal-bar:nth-child(2) {
+            height: 50%;
+        }
+        
+        .signal-bar:nth-child(3) {
+            height: 75%;
+        }
+        
+        .signal-bar:nth-child(4) {
+            height: 100%;
+        }
+        
+        .signal-bar.active {
+            background: #00ff66;
+            box-shadow: 0 0 5px rgba(0, 255, 100, 0.5);
+        }
+        
+        .signal-bar.active-yellow {
+            background: #ffcc00;
+            box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+        }
+        
+        .signal-bar.active-red {
+            background: #ff3333;
+            box-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
+        }
+        
+        .signal-bar.inactive {
+            background: rgba(136, 146, 176, 0.3);
         }
         
         /* 设备列表 */
         .device-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
         
         .device-item {
@@ -142,16 +219,24 @@
             background: rgba(0, 255, 255, 0.05);
             border-radius: 5px;
             border-left: 3px solid #00ffff;
+            transition: all 0.3s;
+        }
+        
+        .device-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateX(3px);
         }
         
         .device-name {
-            font-size: 14px;
+            font-size: 13px;
+            color: #e6f1ff;
         }
         
         .device-status {
             font-size: 12px;
-            padding: 3px 8px;
+            padding: 3px 10px;
             border-radius: 3px;
+            font-weight: 500;
         }
         
         .status-online {
@@ -166,168 +251,199 @@
         
         /* 柱状图区域 */
         .chart-container {
-            height: 180px;
-            margin-top: 15px;
+            height: 150px;
+            margin-top: 12px;
             display: flex;
             align-items: flex-end;
             justify-content: space-around;
-            padding: 10px 0;
+            padding: 10px 5px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
         }
         
         .chart-bar {
-            width: 30px;
+            width: 28px;
             background: linear-gradient(to top, #00ffff, #0088ff);
-            border-radius: 5px 5px 0 0;
+            border-radius: 4px 4px 0 0;
             position: relative;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+            transition: all 0.3s;
+        }
+        
+        .chart-bar:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.9);
         }
         
         .chart-label {
             position: absolute;
-            bottom: -25px;
+            bottom: -22px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 12px;
+            font-size: 11px;
+            color: #8892b0;
+            white-space: nowrap;
+        }
+        
+        .stats-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .summary-item {
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 16px;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .summary-label {
+            font-size: 11px;
             color: #8892b0;
         }
         
-        /* 中央地图区域 */
+        /* 中央视频区域 */
         .map-container {
             grid-row: 2 / 3;
             grid-column: 2 / 3;
-            background: linear-gradient(135deg, #112240 0%, #233554 100%);
-            border-radius: 10px;
+            background: linear-gradient(135deg, #112240 0%, #1a2f4d 100%);
+            border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.15);
+            border: 1px solid rgba(0, 255, 255, 0.3);
             position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            border-radius: 5px;
             overflow: hidden;
         }
         
-        .map-area {
+        .video-container img {
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%230a192f"/><path d="M0 20 L100 20 M0 40 L100 40 M0 60 L100 60 M0 80 L100 80 M20 0 L20 100 M40 0 L40 100 M60 0 L60 100 M80 0 L80 100" stroke="%2300ff66" stroke-width="0.5" opacity="0.3"/></svg>') repeat;
+            object-fit: contain;
+            display: block;
+        }
+        
+        /* 小地图叠加层 */
+        .minimap {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 220px;
+            height: 165px;
+            background: rgba(17, 34, 64, 0.95);
+            border: 2px solid rgba(0, 255, 255, 0.5);
             border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            z-index: 10;
+        }
+        
+        .minimap-title {
+            font-size: 12px;
+            color: #00ffff;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .minimap-area {
+            width: 100%;
+            height: calc(100% - 24px);
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%230a192f"/><path d="M0 20 L100 20 M0 40 L100 40 M0 60 L100 60 M0 80 L100 80 M20 0 L20 100 M40 0 L40 100 M60 0 L60 100 M80 0 L80 100" stroke="%2300ff66" stroke-width="0.5" opacity="0.3"/></svg>') repeat;
+            border-radius: 5px;
             position: relative;
         }
         
-        .field-area {
+        .minimap-robot {
             position: absolute;
-            background: linear-gradient(to bottom, #00ff66, #00cc44);
-            border: 2px solid #00ff66;
-            box-shadow: 0 0 20px rgba(0, 255, 100, 0.3);
-        }
-        
-        .field-1 {
-            top: 10%;
-            left: 10%;
-            width: 35%;
-            height: 40%;
-        }
-        
-        .field-2 {
-            top: 10%;
-            right: 10%;
-            width: 35%;
-            height: 40%;
-        }
-        
-        .field-3 {
-            bottom: 10%;
-            left: 10%;
-            width: 35%;
-            height: 40%;
-            background: linear-gradient(to bottom, #ffaa00, #ff8800);
-            border-color: #ffaa00;
-            box-shadow: 0 0 20px rgba(255, 170, 0, 0.3);
-        }
-        
-        .field-4 {
-            bottom: 10%;
-            right: 10%;
-            width: 35%;
-            height: 40%;
-        }
-        
-        .robot {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: radial-gradient(circle, #000000 30%, #00ffff 100%);
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #00ffff 0%, #0088ff 100%);
             border-radius: 50%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
-            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.9);
+            animation: minimapPulse 2s infinite;
         }
         
-        @keyframes pulse {
-            0% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
-            50% { box-shadow: 0 0 30px rgba(0, 255, 255, 1); }
-            100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
+        @keyframes minimapPulse {
+            0%, 100% { 
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.9);
+            }
+            50% { 
+                box-shadow: 0 0 15px rgba(0, 255, 255, 1);
+            }
         }
         
-        .robot::before {
+        .minimap-robot::before {
             content: '';
             position: absolute;
-            top: -10px;
+            top: -6px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-bottom: 10px solid #00ffff;
-        }
-        
-        .tower {
-            position: absolute;
-            top: 20%;
-            left: 20%;
-            width: 20px;
-            height: 100px;
-            background: linear-gradient(to bottom, #8892b0, #112240);
-            border-radius: 5px 5px 0 0;
-        }
-        
-        .tower::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: -15px;
-            width: 50px;
-            height: 20px;
-            background: linear-gradient(to right, #8892b0, #112240);
-            border-radius: 50%;
+            border-left: 3px solid transparent;
+            border-right: 3px solid transparent;
+            border-bottom: 6px solid #00ffff;
         }
         
         /* 右侧面板 */
         .right-panel {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            overflow-y: auto;
+        }
+        
+        .right-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .right-panel::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 3px;
         }
         
         /* 核心功能统计 */
         .hexagon-container {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
-            height: 180px;
-            margin: 15px 0;
+            gap: 10px;
         }
         
         .hexagon {
-            width: 120px;
-            height: 120px;
+            width: 28px;
+            height: 28px;
             background: linear-gradient(135deg, #00ffff, #0088ff, #ff00ff);
             clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: bold;
             color: white;
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -342,123 +458,173 @@
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
+            margin-top: 12px;
         }
         
         .stat-grid-item {
             text-align: center;
-            padding: 8px;
+            padding: 10px 8px;
             background: rgba(0, 255, 255, 0.05);
             border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .stat-grid-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
         
         .stat-grid-value {
-            font-size: 18px;
+            font-size: 17px;
             color: #00ffff;
             font-weight: bold;
+            margin-bottom: 4px;
         }
         
         .stat-grid-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #8892b0;
-            margin-top: 3px;
         }
         
         /* 病虫害识别统计 */
         .pest-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-top: 12px;
         }
         
         .pest-item {
             text-align: center;
-            padding: 10px;
+            padding: 12px 8px;
             background: rgba(0, 255, 255, 0.05);
             border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .pest-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            transform: scale(1.05);
         }
         
         .pest-icon {
-            width: 50px;
-            height: 50px;
-            margin: 0 auto 10px;
+            width: 45px;
+            height: 45px;
+            margin: 0 auto 8px;
             background: radial-gradient(circle, #ff6600, #ff0000);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
-            font-size: 24px;
+            font-size: 22px;
+            box-shadow: 0 0 15px rgba(255, 100, 0, 0.5);
+        }
+        
+        .pest-name {
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #e6f1ff;
+        }
+        
+        .pest-percentage {
+            font-size: 12px;
+            color: #00ff66;
+            font-weight: bold;
+        }
+        
+        /* 防治方案 */
+        .solution-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .solution-item {
+            padding: 8px 10px;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 2px solid #00ffff;
+        }
+        
+        .solution-label {
+            font-size: 11px;
+            color: #8892b0;
+            margin-bottom: 4px;
+        }
+        
+        .solution-value {
+            font-size: 13px;
+            color: #00ffff;
+            font-weight: 500;
         }
         
         /* 底部防治方案 */
         .bottom-panel {
             grid-column: 1 / -1;
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
         }
         
         .solution-card {
-            background: linear-gradient(135deg, #112240 0%, #233554 100%);
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.2);
+            background: linear-gradient(135deg, #112240 0%, #1a2f4d 100%);
+            border-radius: 8px;
+            padding: 12px 16px;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.25);
             text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .solution-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 255, 255, 0.2);
         }
         
         .solution-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 15px;
+            width: 45px;
+            height: 45px;
+            margin: 0 auto 10px;
             background: linear-gradient(135deg, #00ffff, #0088ff);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 28px;
+            font-size: 22px;
             color: white;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
         }
         
         .solution-title {
-            font-size: 16px;
+            font-size: 13px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: #00ffff;
         }
         
-        .solution-value {
-            font-size: 24px;
+        .solution-card-value {
+            font-size: 20px;
             font-weight: bold;
             color: #00ff66;
             text-shadow: 0 0 10px rgba(0, 255, 100, 0.5);
         }
         
-        /* 响应式设计 */
-        @media (max-width: 1200px) {
+        /* 响应式优化 */
+        @media (max-width: 1920px) and (min-width: 1600px) {
             .container {
-                grid-template-columns: 250px 1fr 250px;
+                grid-template-columns: 300px 1fr 300px;
             }
         }
         
-        @media (max-width: 900px) {
+        @media (max-width: 1600px) {
             .container {
-                grid-template-columns: 1fr;
-                grid-template-rows: 60px auto 400px auto auto;
-                overflow-y: auto;
+                grid-template-columns: 280px 1fr 280px;
             }
-            
-            .left-panel, .right-panel {
-                flex-direction: row;
-                overflow-x: auto;
-            }
-            
-            .panel-card {
-                min-width: 250px;
+            .header h1 {
+                font-size: 22px;
             }
         }
     </style>
@@ -482,55 +648,109 @@
             <div class="panel-card">
                 <div class="panel-title">
                     <span>设备状态监控</span>
-                    <span style="color: #00ff66;">● 正常</span>
+                    <div class="signal-bars" id="signalBars">
+                        <div class="signal-bar active"></div>
+                        <div class="signal-bar active"></div>
+                        <div class="signal-bar active"></div>
+                        <div class="signal-bar active"></div>
+                    </div>
                 </div>
                 <div class="device-stats">
                     <div class="stat-item">
-                        <div class="stat-value" id="battery">98%</div>
-                        <div class="stat-label">充电机</div>
+                        <div class="stat-value" id="cpuUsage">45%</div>
+                        <div class="stat-label">CPU使用率</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="sensorTime">09:00</div>
-                        <div class="stat-label">传感器</div>
+                        <div class="stat-value" id="memoryUsage">62%</div>
+                        <div class="stat-label">内存使用量</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="powerLevel">600%</div>
+                        <div class="stat-value" id="powerLevel">100%</div>
                         <div class="stat-label">电量</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value" id="signalStrength">97%</div>
-                        <div class="stat-label">信号</div>
+                        <div class="stat-label">信号强度</div>
                     </div>
                 </div>
                 
-                <div id="deviceList">
-                    <div class="device-item">
-                        <div class="device-name">主控制器</div>
-                        <div class="device-status status-online">70%</div>
+
+            </div>
+            
+            <!-- 场景统计信息 -->
+            <div class="panel-card">
+                <div class="panel-title">
+                    <div class="hexagon-container">
+                        <div class="hexagon">AI</div>
+                        <span>场景统计信息</span>
                     </div>
-                    <div class="device-item">
-                        <div class="device-name">传感器1</div>
-                        <div class="device-status status-online">90%</div>
+                </div>
+                <div class="stats-grid" id="coreStats">
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">96.5%</div>
+                        <div class="stat-grid-label">识别率</div>
                     </div>
-                    <div class="device-item">
-                        <div class="device-name">传感器2</div>
-                        <div class="device-status status-online">90%</div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">3.15</div>
+                        <div class="stat-grid-label">处理效率</div>
                     </div>
-                    <div class="device-item">
-                        <div class="device-name">执行机构</div>
-                        <div class="device-status status-online">50%</div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">2.00m/s</div>
+                        <div class="stat-grid-label">巡检速度</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">2.3kW</div>
+                        <div class="stat-grid-label">大棚功耗</div>
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- 中央视频流区域 -->
+        <div class="map-container">
+            <div class="video-container">
+                <img src="/video_feed" alt="视频流加载中...">
+            </div>
             
-            <!-- 设备状态监控 -->
+            <!-- 小地图叠加层 -->
+            <div class="minimap">
+                <div class="minimap-title">实时位置</div>
+                <div class="minimap-area" id="minimapArea">
+                    <div class="minimap-robot" id="minimapRobot"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 右侧面板 -->
+        <div class="right-panel">
+            <!-- 病虫害综合统计 -->
             <div class="panel-card">
                 <div class="panel-title">
-                    <span>设备状态监控</span>
-                    <span style="font-size: 12px; color: #8892b0;">查看图表 ▶</span>
+                    <span>病虫害综合统计</span>
+                    <span style="font-size: 12px; color: #8892b0;">查看详情 ▶</span>
                 </div>
                 
-                <div class="chart-container" id="chartContainer">
+                <!-- 病虫害识别 -->
+                <div class="pest-container" id="pestContainer">
+                    <div class="pest-item">
+                        <div class="pest-icon">🐛</div>
+                        <div class="pest-name">蚜虫</div>
+                        <div class="pest-percentage">23%</div>
+                    </div>
+                    <div class="pest-item">
+                        <div class="pest-icon">🦗</div>
+                        <div class="pest-name">蝗虫</div>
+                        <div class="pest-percentage">15%</div>
+                    </div>
+                    <div class="pest-item">
+                        <div class="pest-icon">🍄</div>
+                        <div class="pest-name">真菌</div>
+                        <div class="pest-percentage">12%</div>
+                    </div>
+                </div>
+                
+                <!-- 统计图表 -->
+                <div class="chart-container" id="chartContainer" style="margin-top: 20px;">
                     <div class="chart-bar" style="height: 60%;"><div class="chart-label">虫害</div></div>
                     <div class="chart-bar" style="height: 45%;"><div class="chart-label">生虫</div></div>
                     <div class="chart-bar" style="height: 75%;"><div class="chart-label">2级</div></div>
@@ -539,98 +759,77 @@
                     <div class="chart-bar" style="height: 40%;"><div class="chart-label">0级</div></div>
                 </div>
                 
-                <div style="display: flex; justify-content: space-around; margin-top: 15px;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 18px; color: #00ffff;" id="riskLevel">5%</div>
-                        <div style="font-size: 12px; color: #8892b0;">总体风险</div>
+                <!-- 统计摘要 -->
+                <div class="stats-summary">
+                    <div class="summary-item">
+                        <div class="summary-value" id="riskLevel">5%</div>
+                        <div class="summary-label">总体风险</div>
                     </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 18px; color: #00ffff;" id="alertCount">0:00</div>
-                        <div style="font-size: 12px; color: #8892b0;">预警次数</div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="alertCount">0</div>
+                        <div class="summary-label">预警次数</div>
                     </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 18px; color: #00ffff;" id="trendStat">200</div>
-                        <div style="font-size: 12px; color: #8892b0;">趋势统计</div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="trendStat">200</div>
+                        <div class="summary-label">趋势统计</div>
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 中央地图区域 -->
-        <div class="map-container">
-            <div class="map-area" id="mapArea">
-                <div class="field-area field-1"></div>
-                <div class="field-area field-2"></div>
-                <div class="field-area field-3"></div>
-                <div class="field-area field-4"></div>
-                <div class="robot" id="robot"></div>
-                <div class="tower"></div>
-            </div>
-        </div>
-        
-        <!-- 右侧面板 -->
-        <div class="right-panel">
-            <!-- 核心功能统计 -->
-            <div class="panel-card">
-                <div class="panel-title">
-                    <span>核心功能统计</span>
-                    <span style="font-size: 12px; color: #8892b0;">云台</span>
-                </div>
-                <div class="hexagon-container">
-                    <div class="hexagon">AI</div>
-                </div>
-                <div class="stats-grid" id="coreStats">
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">15%</div>
-                        <div class="stat-grid-label">统计</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">2.7X</div>
-                        <div class="stat-grid-label">效果</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">3.15</div>
-                        <div class="stat-grid-label">效率</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">2.3</div>
-                        <div class="stat-grid-label">能耗</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">2.00</div>
-                        <div class="stat-grid-label">速度</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">5.13</div>
-                        <div class="stat-grid-label">识别率</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">3.20</div>
-                        <div class="stat-grid-label">计算力</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 病虫害识别统计 -->
-            <div class="panel-card">
-                <div class="panel-title">病虫害识别统计</div>
-                <div class="pest-container" id="pestContainer">
-                    <!-- 病虫害数据将通过JavaScript动态生成 -->
                 </div>
             </div>
             
             <!-- 防治方案 -->
             <div class="panel-card">
                 <div class="panel-title">防治方案</div>
-                <div id="solution">
-                    <!-- 防治方案数据将通过JavaScript动态生成 -->
+                <div class="solution-content" id="solution">
+                    <div class="solution-item">
+                        <div class="solution-label">叶片定位</div>
+                        <div class="solution-value">A区-3号</div>
+                    </div>
+                    <div class="solution-item">
+                        <div class="solution-label">病虫害类型</div>
+                        <div class="solution-value">蚜虫</div>
+                    </div>
+                    <div class="solution-item">
+                        <div class="solution-label">危害程度</div>
+                        <div class="solution-value">中度</div>
+                    </div>
+                    <div class="solution-item">
+                        <div class="solution-label">推荐药剂</div>
+                        <div class="solution-value">吡虫啉</div>
+                    </div>
+                    <div class="solution-item">
+                        <div class="solution-label">农残标准</div>
+                        <div class="solution-value">≤0.5mg/kg</div>
+                    </div>
+                    <div class="solution-item">
+                        <div class="solution-label">防治周期</div>
+                        <div class="solution-value">7-10天</div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- 底部防治方案 -->
         <div class="bottom-panel" id="bottomSolutions">
-            <!-- 底部解决方案数据将通过JavaScript动态生成 -->
+            <div class="solution-card">
+                <div class="solution-icon">💧</div>
+                <div class="solution-title">水分消耗</div>
+                <div class="solution-card-value">56L</div>
+            </div>
+            <div class="solution-card">
+                <div class="solution-icon">⚡</div>
+                <div class="solution-title">电力消耗</div>
+                <div class="solution-card-value">200kWh</div>
+            </div>
+            <div class="solution-card">
+                <div class="solution-icon">🌱</div>
+                <div class="solution-title">作物健康度</div>
+                <div class="solution-card-value">92%</div>
+            </div>
+            <div class="solution-card">
+                <div class="solution-icon">🎯</div>
+                <div class="solution-title">巡检进度</div>
+                <div class="solution-card-value">68%</div>
+            </div>
         </div>
     </div>
 
@@ -652,23 +851,14 @@
                 const data = await response.json();
                 
                 // 更新设备状态数据到DOM
-                document.getElementById('battery').textContent = `${data.battery}%`;
-                document.getElementById('sensorTime').textContent = data.sensor_time;
+                document.getElementById('cpuUsage').textContent = `${data.cpu_usage || 45}%`;
+                document.getElementById('memoryUsage').textContent = `${data.memory_usage || 62}%`;
                 document.getElementById('powerLevel').textContent = `${data.power_level}%`;
-                document.getElementById('signalStrength').textContent = `${data.signal_strength}%`;
                 
-                // 更新设备列表
-                const deviceList = document.getElementById('deviceList');
-                deviceList.innerHTML = '';
-                data.devices.forEach(device => {
-                    const deviceItem = document.createElement('div');
-                    deviceItem.className = 'device-item';
-                    deviceItem.innerHTML = `
-                        <div class="device-name">${device.name}</div>
-                        <div class="device-status status-${device.status}">${device.value}%</div>
-                    `;
-                    deviceList.appendChild(deviceItem);
-                });
+                // 更新信号强度条
+                const signalStrength = data.signal_strength || 97;
+                document.getElementById('signalStrength').textContent = `${signalStrength}%`;
+                updateSignalBars(signalStrength);
                 
                 // 更新图表数据
                 const chartContainer = document.getElementById('chartContainer');
@@ -692,18 +882,50 @@
             }
         }
         
+        // 更新信号条显示
+        function updateSignalBars(signalStrength) {
+            const bars = document.querySelectorAll('.signal-bar');
+            const activeCount = Math.ceil((signalStrength / 100) * 4);
+            
+            // 移除所有状态类
+            bars.forEach(bar => {
+                bar.classList.remove('active', 'active-yellow', 'active-red', 'inactive');
+            });
+            
+            // 根据信号强度设置颜色
+            let colorClass = 'active'; // 默认绿色（3-4格）
+            
+            if (activeCount <= 1) {
+                // 1格：红色（0-25%）
+                colorClass = 'active-red';
+            } else if (activeCount === 2) {
+                // 2格：黄色（25-50%）
+                colorClass = 'active-yellow';
+            }
+            // 3-4格：绿色（50-100%）
+            
+            // 应用颜色到激活的信号条
+            bars.forEach((bar, index) => {
+                if (index < activeCount) {
+                    bar.classList.add(colorClass);
+                } else {
+                    bar.classList.add('inactive');
+                }
+            });
+        }
+        
         // 获取机器人状态数据
         async function fetchRobotStatus() {
             try {
                 const response = await fetch(`${API_BASE_URL}/robot/status`);
                 const data = await response.json();
                 
-                // 更新机器人位置
-                const robot = document.getElementById('robot');
-                robot.style.top = `${data.y}%`;
-                robot.style.left = `${data.x}%`;
-                
-                // 可以添加机器人状态显示
+                // 更新机器人位置到小地图
+                const minimapRobot = document.getElementById('minimapRobot');
+                const batteryLevel = document.getElementById('powerLevel');
+                minimapRobot.style.top = `${data.y}%`;
+                minimapRobot.style.left = `${data.x}%`;
+                batteryLevel.textContent = `${data.battery}%`;
                 
             } catch (error) {
                 console.error('获取机器人状态失败:', error);
@@ -716,36 +938,27 @@
                 const response = await fetch(`${API_BASE_URL}/stats/core`);
                 const data = await response.json();
                 
-                // 更新核心功能统计数据
+                // 计算识别率百分比 (recognition_rate * 100 / 某个基准值，这里假设5.13对应96.5%)
+                const recognitionPercent = ((data.recognition_rate / 5.13) * 96.5).toFixed(1);
+                
+                // 更新核心功能统计数据 - 仅保留4个最重要的指标
                 const coreStats = document.getElementById('coreStats');
                 coreStats.innerHTML = `
                     <div class="stat-grid-item">
-                        <div class="stat-grid-value">${data.statistics}%</div>
-                        <div class="stat-grid-label">统计</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">${data.effect}X</div>
-                        <div class="stat-grid-label">效果</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">${data.efficiency}</div>
-                        <div class="stat-grid-label">效率</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">${data.energy_consumption}</div>
-                        <div class="stat-grid-label">能耗</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">${data.speed}</div>
-                        <div class="stat-grid-label">速度</div>
-                    </div>
-                    <div class="stat-grid-item">
-                        <div class="stat-grid-value">${data.recognition_rate}</div>
+                        <div class="stat-grid-value">${recognitionPercent}%</div>
                         <div class="stat-grid-label">识别率</div>
                     </div>
                     <div class="stat-grid-item">
-                        <div class="stat-grid-value">${data.computing_power}</div>
-                        <div class="stat-grid-label">计算力</div>
+                        <div class="stat-grid-value">${data.efficiency}</div>
+                        <div class="stat-grid-label">处理效率</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">${data.speed}m/s</div>
+                        <div class="stat-grid-label">巡检速度</div>
+                    </div>
+                    <div class="stat-grid-item">
+                        <div class="stat-grid-value">${data.energy_consumption}kW</div>
+                        <div class="stat-grid-label">大棚功耗</div>
                     </div>
                 `;
                 
@@ -768,8 +981,8 @@
                     pestItem.className = 'pest-item';
                     pestItem.innerHTML = `
                         <div class="pest-icon">${pest.icon}</div>
-                        <div style="font-size: 14px; margin-bottom: 5px;">${pest.name}</div>
-                        <div style="font-size: 12px; color: #00ff66;">${pest.percentage}%</div>
+                        <div class="pest-name">${pest.name}</div>
+                        <div class="pest-percentage">${pest.percentage}%</div>
                     `;
                     pestContainer.appendChild(pestItem);
                 });
@@ -788,29 +1001,29 @@
                 // 更新防治方案数据到DOM
                 const solution = document.getElementById('solution');
                 solution.innerHTML = `
-                    <div style="margin-bottom: 10px;">
-                        <div style="font-size: 12px; color: #8892b0;">叶片定位</div>
-                        <div style="font-size: 16px; color: #00ffff;">${data.leaf_position}</div>
+                    <div class="solution-item">
+                        <div class="solution-label">叶片定位</div>
+                        <div class="solution-value">${data.leaf_position}</div>
                     </div>
-                    <div style="margin-bottom: 10px;">
-                        <div style="font-size: 12px; color: #8892b0;">病虫害类型</div>
-                        <div style="font-size: 16px; color: #00ffff;">${data.pest_type}</div>
+                    <div class="solution-item">
+                        <div class="solution-label">病虫害类型</div>
+                        <div class="solution-value">${data.pest_type}</div>
                     </div>
-                    <div style="margin-bottom: 10px;">
-                        <div style="font-size: 12px; color: #8892b0;">危害程度</div>
-                        <div style="font-size: 16px; color: #00ffff;">${data.harm_level}</div>
+                    <div class="solution-item">
+                        <div class="solution-label">危害程度</div>
+                        <div class="solution-value">${data.harm_level}</div>
                     </div>
-                    <div style="margin-bottom: 10px;">
-                        <div style="font-size: 12px; color: #8892b0;">推荐药剂</div>
-                        <div style="font-size: 16px; color: #00ffff;">${data.recommended_agent}</div>
+                    <div class="solution-item">
+                        <div class="solution-label">推荐药剂</div>
+                        <div class="solution-value">${data.recommended_agent}</div>
                     </div>
-                    <div style="margin-bottom: 10px;">
-                        <div style="font-size: 12px; color: #8892b0;">农残标准</div>
-                        <div style="font-size: 16px; color: #00ffff;">${data.pesticide_residue}</div>
+                    <div class="solution-item">
+                        <div class="solution-label">农残标准</div>
+                        <div class="solution-value">${data.pesticide_residue}</div>
                     </div>
-                    <div style="margin-bottom: 10px;">
-                        <div style="font-size: 12px; color: #8892b0;">防治周期</div>
-                        <div style="font-size: 16px; color: #00ffff;">${data.control_cycle}</div>
+                    <div class="solution-item">
+                        <div class="solution-label">防治周期</div>
+                        <div class="solution-value">${data.control_cycle}</div>
                     </div>
                 `;
                 
@@ -831,10 +1044,31 @@
                 data.forEach(solution => {
                     const solutionCard = document.createElement('div');
                     solutionCard.className = 'solution-card';
+                    
+                    // 处理数值显示，添加合适的单位
+                    let displayValue = solution.value;
+                    
+                    // 根据标题自动添加单位（如果后端没有提供）
+                    const valueStr = String(solution.value);
+                    
+                    if (solution.title === '水分消耗' || solution.title === '水分') {
+                        if (!valueStr.includes('L') && !valueStr.includes('m³')) {
+                            displayValue = `${solution.value}L`;
+                        }
+                    } else if (solution.title === '电力消耗') {
+                        if (!valueStr.includes('kWh') && !valueStr.includes('W')) {
+                            displayValue = `${solution.value}kWh`;
+                        }
+                    } else if (solution.title === '作物健康度' || solution.title === '巡检进度') {
+                        if (!valueStr.includes('%')) {
+                            displayValue = `${solution.value}%`;
+                        }
+                    }
+                    
                     solutionCard.innerHTML = `
                         <div class="solution-icon">${solution.icon}</div>
                         <div class="solution-title">${solution.title}</div>
-                        <div class="solution-value">${solution.value}</div>
+                        <div class="solution-card-value">${displayValue}</div>
                     `;
                     bottomSolutions.appendChild(solutionCard);
                 });
@@ -871,23 +1105,29 @@
             }
         }
         
-        // 地图点击事件处理
-        function handleMapClick(event) {
-            const mapArea = document.getElementById('mapArea');
-            const rect = mapArea.getBoundingClientRect();
+        // 小地图点击事件处理
+        function handleMinimapClick(event) {
+            const minimapArea = document.getElementById('minimapArea');
+            const rect = minimapArea.getBoundingClientRect();
             
-            // 计算点击位置相对于地图的百分比
+            // 计算点击位置相对于小地图的百分比
             const x = ((event.clientX - rect.left) / rect.width) * 100;
             const y = ((event.clientY - rect.top) / rect.height) * 100;
+            
+            // 更新小地图机器人位置（即使没有API也可以看到效果）
+            const minimapRobot = document.getElementById('minimapRobot');
+            minimapRobot.style.top = `${y}%`;
+            minimapRobot.style.left = `${x}%`;
             
             // 发送移动命令到机器人
             controlRobot(Math.round(x), Math.round(y));
         }
         
-        // 初始化地图点击事件
-        function initMapClick() {
-            const mapArea = document.getElementById('mapArea');
-            mapArea.addEventListener('click', handleMapClick);
+        // 初始化小地图点击事件
+        function initMinimapClick() {
+            const minimapArea = document.getElementById('minimapArea');
+            minimapArea.addEventListener('click', handleMinimapClick);
+            minimapArea.style.cursor = 'crosshair';
         }
         
         // 获取所有数据的函数
@@ -904,15 +1144,18 @@
         
         // 初始化函数
         function init() {
-            // 初始化地图点击事件
-            initMapClick();
+            // 初始化小地图点击事件
+            initMinimapClick();
             
-            // 初始获取所有数据
-            fetchAllData();
+            // 初始化信号条显示
+            updateSignalBars(97);
             
             // 启动时间更新
             updateTime();
             setInterval(updateTime, 1000);
+            
+            // 尝试获取数据（如果API不可用会失败但不影响页面显示）
+            fetchAllData();
             
             // 定期更新数据
             setInterval(fetchAllData, 5000); // 每5秒更新一次数据
