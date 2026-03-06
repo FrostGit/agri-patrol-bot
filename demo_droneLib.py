@@ -36,36 +36,37 @@ def example_1_basic_tracked_control():
         robot.start_receive(callback=status_callback)
         time.sleep(1)
         
-        print("\n\n1. 前进 150mm/s，持续3秒")
-        robot.move_forward(speed=50)
-        time.sleep(3)
+        print("\n\n1. 前进 200mm/s，持续3秒")
+        robot.move_forward(speed=200)
+        time.sleep(5)
         
         print("\n2. 停止1秒")
         robot.stop()
         time.sleep(1)
         
-        print("\n3. 后退 150mm/s，持续3秒")
-        robot.move_backward(speed=50)
-        time.sleep(3)
+        print("\n3. 后退 200mm/s，持续3秒")
+        robot.move_backward(speed=200)
+        time.sleep(5)
         
         print("\n4. 停止1秒")
         robot.stop()
         time.sleep(1)
         
-        print("\n5. 原地左转（逆时针）0.6rad/s，持续3秒")
-        robot.rotate_left(speed=0.6)
+        print("\n5. 原地左转（逆时针）0.8rad/s，持续3秒")
+        robot.rotate_left(speed=0.8)
         time.sleep(3)
         
         print("\n6. 停止1秒")
         robot.stop()
-        time.sleep(1)
+        time.sleep(3)
         
-        print("\n7. 原地右转（顺时针）0.6rad/s，持续3秒")
-        robot.rotate_right(speed=0.6)
+        print("\n7. 原地右转（顺时针）0.8rad/s，持续3秒")
+        robot.rotate_right(speed=0.8)
         time.sleep(3)
         
         print("\n8. 停止")
         robot.stop()
+        time.sleep(3)
         
         print("\n\n测试完成！")
         
@@ -305,8 +306,8 @@ def example_7_battery_monitor():
     PORT = '/dev/ttyACM0'
     
     # 电压阈值
-    VOLTAGE_LOW = 22.0    # 低电量阈值
-    VOLTAGE_CRITICAL = 21.0  # 严重低电量阈值
+    VOLTAGE_LOW = 11.0    # 低电量阈值
+    VOLTAGE_CRITICAL = 10.8  # 严重低电量阈值
     
     def battery_check_callback(status: RobotStatus):
         """带电池检查的回调函数"""
