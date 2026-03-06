@@ -1,0 +1,18 @@
+# 农业巡检智能服务应用 - 树莓派后端依赖
+
+# Flask Web框架
+Flask==2.3.3
+Werkzeug==2.3.7
+
+# 视频处理
+opencv-python==4.8.1.78
+numpy==1.24.3
+
+# 树莓派相机库（可选，如果使用USB相机可以不装）
+# picamera2  # 需要在树莓派OS上通过apt安装
+
+# 系统监控（可选但推荐）
+psutil==5.9.5
+
+# CORS支持（如果需要跨域访问）
+flask-cors==4.0.0

@@ -106,7 +106,7 @@ class CameraManager:
                 with self.lock:
                     self.frame = frame_bgr
                 
-                time.sleep(1/15)  # 15 FPS
+                time.sleep(1/24)  # 24 FPS
                 
             except Exception as e:
                 print(f"帧捕获错误: {e}")
@@ -170,14 +170,10 @@ def generate_frames():
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         cv2.putText(frame, timestamp, (10, 30),
                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-        
-        # 添加机器人位置指示（可选）
-        pos_text = f"Robot: ({robot_position['x']}, {robot_position['y']})"
-        cv2.putText(frame, pos_text, (10, 60),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+         
         
         # 编码为JPEG
-        ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+        ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 100])
         
         if not ret:
             continue
