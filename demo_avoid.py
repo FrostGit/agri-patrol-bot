@@ -3,7 +3,6 @@ import math
 import time
 from threading import Thread
 from robot import WheeltecRobot
-from app import app, camera_manager, dev_info
 from GPIO_Utilities import UltrasonicRadar, FanController
 # ============================================================
 # 巡检参数配置区 (方便调试)
@@ -16,6 +15,11 @@ ROTATE_SPEED = 0.8      # 旋转角速度 (rad/s), 约45.8度/秒
 # 时间参数 (单位：秒)
 TIME_STRAIGHT_A = 6.3   # [A] 往返直行单次时间
 TIME_WAIT_B = 2.0       # [B] 回到原点后的等待时间
+TIME_STRAIGHT_C = 2.2   # [C] 避障前的直行时间
+TIME_STRAIGHT_D = 1.8   # [D] 避障绕行时的斜向直行时间
+TIME_STRAIGHT_E = 3   # [E] 避障完成后的直行时间
+
+# 避障参数
 AVOID_ANGLE = math.pi / 4  # 避障转向角度 45度
 
 # 其他配置
@@ -56,8 +60,8 @@ def robot_inspection():
         
         # 1.2 原地调头 180度 (pi rad)
         print("  [-] 原地左转调头 180度")
-        turn_time = math.pi / ROTATE_SPEED + 0.17 # 时间 = 角度/角速度 + 修正值
-        robot.rotate_left(speed=ROTATE_SPEED) 
+        turn_time = math.pi / ROTATE_SPEED + 0.2# 时间 = 角度/角速度 + 修正值
+        robot.rotate_left(speed=ROTATE_SPEED)
         time.sleep(turn_time)
         robot.stop()
         time.sleep(0.3)
@@ -65,7 +69,7 @@ def robot_inspection():
         # 1.3 再次直行 时间A (方向相反，实际返回原点)
         print("  [-] 向前直行 {}s (返回原点)".format(TIME_STRAIGHT_A))
         robot.move_forward(speed=NORMAL_SPEED)
-        time.sleep(TIME_STRAIGHT_A - 0.4)
+        time.sleep(TIME_STRAIGHT_A)
         robot.stop()
         time.sleep(0.3)
         
@@ -76,8 +80,7 @@ def robot_inspection():
         robot.stop()
         time.sleep(0.5)
         
-        # 1.5 再次调头 180度 (恢复原始朝向)
-        print("  [-] 倒车")
+        print("  [-] 倒车测试")
         robot.move_backward(speed=NORMAL_SPEED/2)
         radar = UltrasonicRadar()
         radar_thread = Thread(target=radar.run, kwargs={'duration': 4})
@@ -97,15 +100,7 @@ def robot_inspection():
             else:
                 print("  -> 等待数据...")
             time.sleep(1)
-        robot.stop()
-        time.sleep(0.3)
-
-        # 1.6 调整方向 (恢复原始朝向)
-        print("  [-] (恢复朝向)")
-        robot.rotate_right(speed=ROTATE_SPEED + 0.2)
-        time.sleep(0.3)
-        robot.stop()
-        time.sleep(0.2)
+        
         
         # ========================================================
         # 阶段2: 定点等待
@@ -114,28 +109,69 @@ def robot_inspection():
         _wait_with_status(TIME_WAIT_B)
         
         # ========================================================
-        # 阶段3: 直行
+        # 阶段3: 避障前直行
         # ========================================================
-        # 2.1 向前直行 时间A
-        print("  [-] 向前直行 {}s @ {}mm/s".format(TIME_STRAIGHT_A, NORMAL_SPEED))
+        print("\n[Phase 3] 避障前直行 {}s".format(TIME_STRAIGHT_C))
         robot.move_forward(speed=NORMAL_SPEED)
-        time.sleep(TIME_STRAIGHT_A - 0.5)
+        time.sleep(TIME_STRAIGHT_C)
         robot.stop()
-        time.sleep(0.3)  # 缓冲时间，确保完全停止
+        time.sleep(0.3)
         
         # ========================================================
-        # 阶段3: 结束动作
+        # 阶段4: 模拟避障流程 (履带底盘特殊处理)
+        # ========================================================
+        print("\n[Phase 4] 执行避障流程 (履带模式)")
+        print("  [Note] 履带底盘不支持横向平移，采用'转向+直行'模拟斜向避障")
+        
+        # 4.1 向左转45度 (准备向左前方行驶)
+        print("  [-] 左转 {:.0f}度 准备避障".format(math.degrees(AVOID_ANGLE)))
+        robot.rotate_left(speed=ROTATE_SPEED)
+        time.sleep(AVOID_ANGLE / ROTATE_SPEED)
+        robot.stop()
+        time.sleep(0.2)
+        
+        # 4.2 向左前方直行 时间D
+        print("  [-] 向左前方直行 {}s".format(TIME_STRAIGHT_D))
+        robot.move_forward(speed=NORMAL_SPEED)
+        time.sleep(TIME_STRAIGHT_D)
+        robot.stop()
+        time.sleep(0.2)
+        
+        # 4.3 向右转45度 (回到原行驶方向)
+        print("  [-] 右转 {:.0f}度 回到原路线".format(math.degrees(AVOID_ANGLE)))
+        robot.rotate_right(speed=ROTATE_SPEED)
+        time.sleep(AVOID_ANGLE / ROTATE_SPEED * 2)
+        robot.stop()
+        time.sleep(0.3)
+        
+        # 4.4 [可选] 补偿直行: 确保完全回到原路线
+        # 由于履带转向存在滑移误差，可根据实际测试添加微小补偿
+        robot.move_forward(speed=50)
+        time.sleep(0.5)
+        robot.stop()
+        
+        # ========================================================
+        # 阶段5: 避障后直行
+        # ========================================================
+        print("\n[Phase 5] 避障后直行 {}s".format(TIME_STRAIGHT_E))
+        robot.move_forward(speed=NORMAL_SPEED)
+        time.sleep(TIME_STRAIGHT_E)
+        robot.stop()
+        time.sleep(0.3)
+        
+        # ========================================================
+        # 阶段6: 结束动作
         # ========================================================
         print("\n[Phase 6] 任务收尾")
         
-        # 3.1 向右侧转向
-        print("  [-] 右转 {:.0f}度 结束姿态".format(math.degrees(AVOID_ANGLE)))
-        robot.rotate_right(speed=ROTATE_SPEED + 0.1)
-        time.sleep(AVOID_ANGLE / ROTATE_SPEED + 0.55)
+        # 6.1 向左侧45度转向
+        print("  [-] 左转 {:.0f}度 结束姿态".format(math.degrees(AVOID_ANGLE)))
+        robot.rotate_left(speed=ROTATE_SPEED)
+        time.sleep(AVOID_ANGLE / ROTATE_SPEED)
         robot.stop()
-        time.sleep(0.8)
+        time.sleep(0.3)
         
-        # 3.2 打印完成信息
+        # 6.2 打印完成信息
         status = robot.get_status()
         print("\n" + "=" * 60)
         print("[Success] 巡检任务圆满完成")
@@ -145,8 +181,6 @@ def robot_inspection():
         print("    - 行驶速度: {}mm/s (设定值)".format(NORMAL_SPEED))
         print("=" * 60 + "\n")
         
-        # 3.3 播放提示音
-        play_notice_audio()
         
         print("[Inspection] 任务流程执行完毕")
         
@@ -177,83 +211,19 @@ def _wait_with_status(duration: float):
     print()  # 换行
 
 
-def play_notice_audio():
-    """播放提示音频 (仅使用 mpv)"""
-    try:
-        # 检查音频文件是否存在
-        if not os.path.exists(NOTICE_AUDIO):
-            print("[Error] 音频文件未找到：{}".format(os.path.abspath(NOTICE_AUDIO)))
-            return
-        
-        print("[Audio] 正在播放：{}".format(NOTICE_AUDIO))
-        
-        # 使用 mpv 后台播放
-        # --no-video: 不显示视频窗口
-        # --really-quiet: 静默模式，减少日志输出
-        # &: 后台运行，不阻塞主程序
-        cmd = "mpv --no-video --really-quiet '{}' &".format(NOTICE_AUDIO)
-        os.system(cmd)
-        
-    except Exception as e:
-        print("[Error] 音频播放异常：{}: {}".format(type(e).__name__, e))
-
-
 if __name__ == '__main__':
     print("=" * 60)
-    print("农业巡检智能服务应用 - 树莓派4B+ 后端")
+    print("农业巡检智能服务应用 - 树莓派后端")
     print("=" * 60)
     
-    # 启动摄像头
-    print("\n[Camera] 正在启动摄像头...")
-    if camera_manager.start():
-        print("[Camera] 启动成功\n")
-    else:
-        print("[Warning] 摄像头启动失败，视频流将不可用\n")
-    
-    # 启动Flask服务器
-    print("[Server] 启动Flask服务器...")
-    print("[Server] 访问地址: http://<树莓派IP>:5000")
-    print("[Server] 按Ctrl+C停止服务器\n")
-    
     try:
-        # 在树莓派上运行，监听所有接口
-        app_thread = Thread(target=app.run, kwargs={
-            'host': '0.0.0.0',
-            'port': 5000,
-            'debug': False
-        }, daemon=True)
-        app_thread.start()
-        
-        while app_thread.is_alive():
-            print("[Monitor] 指令: {} | CPU: {}% | MEM: {}% | TEMP: {}C".format(
-                dev_info.current_cmd,
-                dev_info.cpu_usage,
-                dev_info.memory_usage,
-                dev_info.cpu_temperature))
-            
-            if dev_info.current_cmd == "start_inspection":
-                print("[Action] 执行巡检任务...")
-                robot_inspection()
-                dev_info.current_cmd = "idle"  # 重置指令状态
-            elif dev_info.current_cmd == "stop_inspection":
-                print("[Action] 巡检任务已停止")
-                robot.stop()
-                dev_info.current_cmd = "idle"
-            elif dev_info.current_cmd == "capture_image":
-                print("[Action] 捕获图像...")
-                # camera_manager.capture()  # 如有需要可调用
-                dev_info.current_cmd = "idle"
-            else:
-                print("[Status] 设备处于空闲状态")
-            
-            print("-" * 60)
-            app_thread.join(timeout=1)
+        print("[Action] 执行巡检任务...")
+        robot_inspection()
+        print("-" * 60)
 
     except KeyboardInterrupt:
         print("\n[Warning] 检测到 Ctrl+C，正在关闭服务...")
         robot.stop()
-        app_thread.join()
     finally:
-        camera_manager.stop()
         robot.disconnect()
         print("[Server] 服务已安全停止")
